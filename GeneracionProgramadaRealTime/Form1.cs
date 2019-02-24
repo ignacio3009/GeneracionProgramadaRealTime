@@ -17,16 +17,15 @@ namespace GeneracionProgramadaRealTime
     public partial class Form1 : Form
     {
         string[] Data;
-        string[] Names = new string[10];
-        double[,] Gen = new double[10,24];
+        string[] Names = new string[20];
+        double[,] Gen = new double[20,24];
         public Form1()
         {
             InitializeComponent();
             populateNames();
+            setAllTrue();
             resetGen();
             getData();
-
-
         }
         
         private void resetGen()
@@ -45,13 +44,13 @@ namespace GeneracionProgramadaRealTime
         {
             MainPanel.Items.Clear();
             int hora = DateTime.Now.Hour;
-            for (int i = 0; i < CheckedBoxCentrales.Items.Count; i++)
+            for (int i = 0; i < Lista1.Items.Count; i++)
             {
-                if (CheckedBoxCentrales.GetItemChecked(i))
+                if (Lista1.GetItemChecked(i))
                 {
                     if (Names[i] == null) break;
                     ListViewItem item = new ListViewItem();
-                    item.Text = (string)CheckedBoxCentrales.Items[i];
+                    item.Text = (string)Lista1.Items[i];
                     item.SubItems.Add(Gen[i,hora].ToString());
                     MainPanel.Items.Add(item);
                 }
@@ -62,9 +61,9 @@ namespace GeneracionProgramadaRealTime
 
         private void populateNames()
         {
-            for (int i = 0; i < CheckedBoxCentrales.Items.Count; i++)
+            for (int i = 0; i < Lista1.Items.Count; i++)
             {
-                Names[i] = CheckedBoxCentrales.Items[i].ToString().ToLower();
+                Names[i] = Lista1.Items[i].ToString().ToLower();
             }
         }
 
@@ -127,11 +126,43 @@ namespace GeneracionProgramadaRealTime
             {   
                 if (Names[i] == null) break;
                 ListViewItem item = new ListViewItem();
-                item.Text = (string)CheckedBoxCentrales.Items[i];
+                item.Text = (string)Lista1.Items[i];
                 item.SubItems.Add(Gen[i, hora].ToString());
                 MainPanel.Items.Add(item);
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Size = new Size(207, 322);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Size = new Size(592, 322);
+        }
+
+        public void setAllTrue()
+        {
+            for (int i = 0; i < Lista1.Items.Count; i++)
+            {
+                Lista1.SetItemChecked(i, true);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+
+                    System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
+                }
+            }
     }
+
 }
