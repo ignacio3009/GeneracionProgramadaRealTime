@@ -20,15 +20,47 @@ namespace GeneracionProgramadaRealTime
         string[] Names = new string[20];
         double[,] Gen = new double[20, 24];
         string path;
+        public System.Windows.Forms.Timer timer;
+        public string dia1, dia2;
+
         public Form1()
         {
             InitializeComponent();
-            path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) +@"\";
-            //Console.WriteLine(path);
+            path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + @"\";
+            //path = "\";
             populateNames();
             setAllTrue();
             resetGen();
             getData();
+
+            this.TopMost = true;
+            dia1 = DateTime.Now.ToLongDateString();
+            
+
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = (1000 * 60 * 3);
+            timer.Tick += new EventHandler(updateValues);
+            timer.Start();
+
+
+
+
+
+        }
+
+        private void updateValues(object sender, EventArgs e)
+        {
+            dia2 = DateTime.Now.ToLongDateString();
+            if (dia1 != dia2)
+            {
+                dia1 = dia2;
+                resetGen();
+                getData();
+            }
+            else
+            {
+                fillDataMainPanel();
+            }
         }
 
         private void resetGen()
@@ -143,19 +175,26 @@ namespace GeneracionProgramadaRealTime
                     }
                 }
                 fillDataMainPanel();
+                //Application.OpenForms["Form1"].BringToFront();
             }
         }
 
         public void fillDataMainPanel()
         {
+            MainPanel.Items.Clear();
             int hora = DateTime.Now.Hour;
-            for (int i = 0; i < Names.Length; i++)
+            for (int i = 0; i < Lista1.Items.Count; i++)
             {
-                if (Names[i] == null) break;
-                ListViewItem item = new ListViewItem();
-                item.Text = (string)Lista1.Items[i];
-                item.SubItems.Add(Gen[i, hora].ToString());
-                MainPanel.Items.Add(item);
+                if (Lista1.GetItemChecked(i))
+                {
+                    if (Names[i] == null) break;
+                    ListViewItem item = new ListViewItem();
+                    item.Text = (string)Lista1.Items[i];
+                    item.SubItems.Add(Gen[i, hora].ToString());
+                    MainPanel.Items.Add(item);
+                }
+
+
             }
         }
 
@@ -192,7 +231,18 @@ namespace GeneracionProgramadaRealTime
                     path = fbd.SelectedPath + @"\";
                 }
             }
+            //this.TopMost = true;
+            getData();
+            this.BringToFront();
+           
+            //Application.OpenForms["Form1"].BringToFront();
+            
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+            this.TopMost = !this.TopMost;
+        }
     }
 }
