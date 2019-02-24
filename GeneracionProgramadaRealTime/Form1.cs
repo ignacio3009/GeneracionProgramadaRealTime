@@ -18,22 +18,25 @@ namespace GeneracionProgramadaRealTime
     {
         string[] Data;
         string[] Names = new string[20];
-        double[,] Gen = new double[20,24];
+        double[,] Gen = new double[20, 24];
+        string path;
         public Form1()
         {
             InitializeComponent();
+            path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) +@"\";
+            //Console.WriteLine(path);
             populateNames();
             setAllTrue();
             resetGen();
             getData();
         }
-        
+
         private void resetGen()
         {
             //Console.WriteLine(Gen.Length);
-            for(int i=0;i<10;i++)
+            for (int i = 0; i < 10; i++)
             {
-                for(int j = 0; j < 24; j++)
+                for (int j = 0; j < 24; j++)
                 {
                     Gen[i, j] = 0;
                 }
@@ -51,7 +54,7 @@ namespace GeneracionProgramadaRealTime
                     if (Names[i] == null) break;
                     ListViewItem item = new ListViewItem();
                     item.Text = (string)Lista1.Items[i];
-                    item.SubItems.Add(Gen[i,hora].ToString());
+                    item.SubItems.Add(Gen[i, hora].ToString());
                     MainPanel.Items.Add(item);
                 }
 
@@ -70,10 +73,34 @@ namespace GeneracionProgramadaRealTime
         public void getData()
         {
             string name = "PRG" + DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd") + ".xlsx";
-            string path = @"C:\Users\ignac\source\repos\GeneracionProgramadaRealTime\GeneracionProgramadaRealTime\bin\Debug\";
             string filename = path + name;
-            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(filename)))
+            
+            if (!File.Exists(filename))
             {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    MessageBox.Show("Seleccione Carpeta con Programas");
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+
+                        path = fbd.SelectedPath + @"\";
+                        getData();
+                        return;
+                        //filename = path + name;
+                        //if (!File.Exists(filename))
+                        //{
+                        //    getData();
+                        //    return;
+                        //}
+                    }
+                }
+            }
+            FileInfo fi = new FileInfo(filename);
+            using (ExcelPackage xlPackage = new ExcelPackage(fi))
+            {   
+                
                 resetGen();
                 var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
                 var totalRows = myWorksheet.Dimension.End.Row;
@@ -123,7 +150,7 @@ namespace GeneracionProgramadaRealTime
         {
             int hora = DateTime.Now.Hour;
             for (int i = 0; i < Names.Length; i++)
-            {   
+            {
                 if (Names[i] == null) break;
                 ListViewItem item = new ListViewItem();
                 item.Text = (string)Lista1.Items[i];
@@ -158,11 +185,14 @@ namespace GeneracionProgramadaRealTime
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    //string[] files = Directory.GetFiles(fbd.SelectedPath);
 
-                    System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
+                    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
+                    //MessageBox.Show(fbd.SelectedPath);
+                    path = fbd.SelectedPath + @"\";
                 }
             }
-    }
+        }
 
+    }
 }
