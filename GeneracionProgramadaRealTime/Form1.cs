@@ -153,7 +153,7 @@ namespace GeneracionProgramadaRealTime
 
                     string central = Names[i];
 
-                    for (int j = 0; j < Data.Length; j++)
+                    for (int j = 100; j < Data.Length; j++)
                     {
 
                         string[] linea = Data[j].Split(',');
