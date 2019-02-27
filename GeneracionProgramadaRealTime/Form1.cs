@@ -34,8 +34,9 @@ namespace GeneracionProgramadaRealTime
             getData();
 
             this.TopMost = true;
-            dia1 = DateTime.Now.ToLongDateString();
-            
+            dia1 = DateTime.Now.ToLocalTime().ToLongDateString();
+
+
 
             timer = new System.Windows.Forms.Timer();
             timer.Interval = (1000 * 60 * 3);
@@ -50,7 +51,7 @@ namespace GeneracionProgramadaRealTime
 
         private void updateValues(object sender, EventArgs e)
         {
-            dia2 = DateTime.Now.ToLongDateString();
+            dia2 = DateTime.Now.ToLocalTime().ToLongDateString();
             if (dia1 != dia2)
             {
                 dia1 = dia2;
@@ -153,7 +154,7 @@ namespace GeneracionProgramadaRealTime
 
                     string central = Names[i];
 
-                    for (int j = 0; j < Data.Length; j++)
+                    for (int j = 100; j < Data.Length; j++)
                     {
 
                         string[] linea = Data[j].Split(',');
@@ -182,7 +183,7 @@ namespace GeneracionProgramadaRealTime
         public void fillDataMainPanel()
         {
             MainPanel.Items.Clear();
-            int hora = DateTime.Now.Hour;
+            int hora = DateTime.Now.ToLocalTime().Hour;
             for (int i = 0; i < Lista1.Items.Count; i++)
             {
                 if (Lista1.GetItemChecked(i))
